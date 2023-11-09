@@ -1,0 +1,24 @@
+project PR2 is
+
+   for Main use ("evaluer_alea_lca.adb", "evaluer_alea_th.adb", "exemple_alea.adb", "exemple_unbounded_string.adb", "lca_sujet.adb", "test_lca.adb", "test_th.adb", "th_sujet.adb");
+
+   for Object_Dir use "build";
+
+   package Builder is
+      for Default_Switches ("ada") use ("-s");
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnatwa", "-gnata", "-g");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use ("-E");
+   end Binder;
+
+   package Linker is
+      for Switches ("Ada") use ("-Xlinker", "-ld_classic", "-mmacosx-version-min=10.14.1");
+   end Linker;
+
+end PR2;
+
