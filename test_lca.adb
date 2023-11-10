@@ -379,6 +379,6 @@ begin
 	Tester_La_Valeur_Erreur;
 	Tester_Pour_chaque;
 	Tester_Pour_chaque_Somme_Si_Cle_Commence_Par_Q;
-	Tester_Pour_chaque_Somme_Len4_Avec_Exception;
+	Tester_Pour_chaque_Somme_Len4_Avec_Exception; -- Lève une exception
 	Put_Line ("Fin des tests : OK.");
 end Test_LCA;

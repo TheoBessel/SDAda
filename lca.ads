@@ -38,7 +38,7 @@ package LCA is
 	-- Supprimer la valeur associée à une Clé dans une Sda.
 	-- Exception : Cle_Absente_Exception si Clé n'est pas utilisée dans la Sda
 	procedure Supprimer (Sda : in out T_LCA ; Cle : in T_Cle) with
-		Post =>  Taille (Sda) = Taille (Sda)'Old - 1 -- un élément de moins
+		Post => Taille (Sda) = Taille (Sda)'Old - 1 -- un élément de moins
 			and not Cle_Presente (Sda, Cle);         -- la clé a été supprimée
 
 
@@ -59,6 +59,14 @@ package LCA is
 
 private
 
-	-- TODO : à compléter
+	type T_Cellule;
+
+	type T_LCA is access T_Cellule;
+
+	type T_Cellule is record
+		Cle : T_Cle;
+		Valeur : T_Valeur;
+		Suivant : T_LCA;
+	end record;
 
 end LCA;
