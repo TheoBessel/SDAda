@@ -1,3 +1,4 @@
+with Ada.Text_IO;            use Ada.Text_IO;
 with SDA_Exceptions;         use SDA_Exceptions;
 with Ada.Unchecked_Deallocation;
 
@@ -8,7 +9,7 @@ package body LCA is
 
 	procedure Initialiser(Sda: out T_LCA) is
 	begin
-		Sda := Null;								-- On initialise la Sda à Null
+		Sda := Null;									-- On initialise la Sda à Null
 	end Initialiser;
 
 
@@ -17,24 +18,39 @@ package body LCA is
 		if Est_Vide(Sda) then
 			Null;
 		else
-			Detruire(Sda.all.Suivant);				-- On appelle détruire sur la queue de liste
-			Free(Sda);								-- On Free le pointeur qui pointe sur la tête
+			Detruire(Sda.all.Suivant);					-- On appelle détruire sur la queue de liste
+			Free(Sda);									-- On Free le pointeur qui pointe sur la tête
 		end if;
 	end Detruire;
 
 
+	procedure Afficher_Debug (Sda : in T_LCA) is
+	begin
+		if Est_Vide(Sda) then
+			Put("--E");
+		else
+			Put("-->[");
+			Afficher_Cle(Sda.all.Cle);
+			Put(" : ");
+			Afficher_Donnee(Sda.all.Valeur);
+			Put("]");
+			Afficher_Debug(Sda.all.Suivant);
+		end if;
+	end Afficher_Debug;
+
+
 	function Est_Vide (Sda : T_LCA) return Boolean is
 	begin
-		return (Sda = Null);						-- La liste vide correspond à un pointeur Null
+		return (Sda = Null);							-- La liste vide correspond à un pointeur Null
 	end;
 
 
 	function Taille (Sda : in T_LCA) return Integer is
 	begin
 		if Est_Vide(Sda) then
-			return 0;								-- La liste vide est de taille égale à 0
+			return 0;									-- La liste vide est de taille égale à 0
 		else
-			return 1 + Taille(Sda.all.Suivant);		-- On ajoute 1 à la taille à chaque cellule
+			return 1 + Taille(Sda.all.Suivant);			-- On ajoute 1 à la taille à chaque cellule
 		end if;
 	end Taille;
 
@@ -42,12 +58,12 @@ package body LCA is
 	procedure Enregistrer (Sda : in out T_LCA ; Cle : in T_Cle ; Valeur : in T_Valeur) is
 	begin
 		if Est_Vide(Sda) then
-			Sda := new T_Cellule;					-- On crée une nouvelle cellule contenant les valeurs voulues
+			Sda := new T_Cellule;						-- On crée une nouvelle cellule contenant les valeurs voulues
 			Sda.all.Cle := Cle;
 			Sda.all.Valeur := Valeur;
 			Sda.all.Suivant := Null;
 		elsif (Sda.all.Cle = Cle) then
-			Sda.all.Valeur := Valeur;				-- On modifie la valeur indexée par la clé `Cle`
+			Sda.all.Valeur := Valeur;					-- On modifie la valeur indexée par la clé `Cle`
 		else
 			Enregistrer(Sda.all.Suivant, Cle, Valeur);
 		end if;
@@ -70,7 +86,7 @@ package body LCA is
 			raise Cle_Absente_Exception;
 		else
 			if (Sda.all.Cle = Cle) then
-				return Sda.all.Valeur;				-- On retourne la valeur associée à la clé `Cle`
+				return Sda.all.Valeur;					-- On retourne la valeur associée à la clé `Cle`
 			else
 				return La_Valeur(Sda.all.Suivant, Cle);
 			end if;
@@ -85,19 +101,19 @@ package body LCA is
 			raise Cle_Absente_Exception;
 		elsif Est_Vide(Sda.all.Suivant) then
 			if (Sda.all.Cle = Cle) then
-				Sda := Null;
+				Detruire(Sda);
 			else
 				raise Cle_Absente_Exception;
 			end if;
 		else
 			if (Sda.all.Suivant.all.Cle = Cle) then
-				Tmp_Sda := Sda.all.Suivant; 		-- On stocke la case à supprimer dans un pointeur temporaire
+				Tmp_Sda := Sda.all.Suivant; 			-- On stocke la case à supprimer dans un pointeur temporaire
 				Sda.all.Suivant := Sda.all.Suivant.all.Suivant;
-				Free (Tmp_Sda); 					-- On détruit le pointeur temporaire
+				Free (Tmp_Sda); 						-- On détruit le pointeur temporaire
 			elsif (Sda.all.Cle = Cle) then
-				Tmp_Sda := Sda;						-- On stocke la case à supprimer dans un pointeur temporaire
+				Tmp_Sda := Sda; 						-- On stocke la case à supprimer dans un pointeur temporaire
 				Sda := Sda.all.Suivant;
-				Free (Tmp_Sda);						-- On détruit le pointeur temporaire
+				Free (Tmp_Sda);							-- On détruit le pointeur temporaire
 			else
 				Supprimer(Sda.all.Suivant, Cle);
 			end if;
@@ -110,8 +126,12 @@ package body LCA is
 		if Est_Vide(Sda) then
 			Null;
 		else
-			Traiter(Sda.all.Cle, Sda.all.Valeur);	-- On applique le traitement à la tête de liste
-			Pour_Chaque(Sda.all.Suivant);			-- On applique le traitement à la queue de liste
+			begin
+				Traiter(Sda.all.Cle, Sda.all.Valeur);	-- On applique le traitement à la tête de liste
+				exception
+					when others => Null;
+			end;
+			Pour_Chaque(Sda.all.Suivant);				-- On applique le traitement à la queue de liste
 		end if;
 	end Pour_Chaque;
 

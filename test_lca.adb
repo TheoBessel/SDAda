@@ -49,6 +49,20 @@ procedure Test_LCA is
 	-- Afficher la Sda.
 	procedure Afficher is
 		new Pour_Chaque (Afficher);
+
+
+	procedure Afficher_Avec_Guillemets (S : in Unbounded_String) is
+	begin
+		Put (Avec_Guillemets (S));
+	end Afficher_Avec_Guillemets;
+
+	procedure Afficher (N: in Integer) is 
+	begin
+		Put (N, 1);
+	end;
+
+	procedure Afficher_Interne is
+		new Afficher_Debug(Afficher_Avec_Guillemets, Afficher);
 	--
 
 	Nb_Cles : constant Integer := 7;
@@ -80,6 +94,7 @@ procedure Test_LCA is
 			if Bavard then
 				Put_Line ("Après insertion de la clé " & Cles (I));
 				Afficher (Annuaire);
+				Afficher_Interne (Annuaire); New_Line;
 				New_Line;
 			else
 				null;
@@ -334,7 +349,6 @@ procedure Test_LCA is
 	end Tester_Pour_chaque_Somme_Si_Cle_Commence_Par_Q;
 
 
-
 	procedure Tester_Pour_chaque_Somme_Len4_Avec_Exception is
 		Annuaire : T_LCA;
 
@@ -368,7 +382,6 @@ procedure Test_LCA is
 	end Tester_Pour_chaque_Somme_Len4_Avec_Exception;
 
 
-
 begin
 	Tester_Exemple_Sujet;
 	Tester_Supprimer_Inverse;
@@ -379,6 +392,6 @@ begin
 	Tester_La_Valeur_Erreur;
 	Tester_Pour_chaque;
 	Tester_Pour_chaque_Somme_Si_Cle_Commence_Par_Q;
-	Tester_Pour_chaque_Somme_Len4_Avec_Exception; -- Lève une exception
+	Tester_Pour_chaque_Somme_Len4_Avec_Exception;
 	Put_Line ("Fin des tests : OK.");
 end Test_LCA;

@@ -57,6 +57,15 @@ package LCA is
 	procedure Pour_Chaque (Sda : in T_LCA);
 
 
+	-- Afficher la Sda en révélant sa structure interne.
+	-- Voici un exemple d'affichage.
+	-- -->["un" : 1]-->["deux" : 2]-->["trois" : 3]-->["quatre" : 4]--E
+	generic
+		with procedure Afficher_Cle (Cle : in T_Cle);
+		with procedure Afficher_Donnee (Valeur : in T_Valeur);
+	procedure Afficher_Debug (Sda : in T_LCA);
+
+
 private
 
 	type T_Cellule;
