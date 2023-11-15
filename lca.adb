@@ -7,7 +7,7 @@ package body LCA is
 	procedure Free is
 		new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_LCA);
 
-	procedure Initialiser(Sda: out T_LCA) is
+	procedure Initialiser (Sda: out T_LCA) is
 	begin
 		Sda := Null;									-- On initialise la Sda à Null
 	end Initialiser;
@@ -106,11 +106,7 @@ package body LCA is
 				raise Cle_Absente_Exception;
 			end if;
 		else
-			if (Sda.all.Suivant.all.Cle = Cle) then
-				Tmp_Sda := Sda.all.Suivant; 			-- On stocke la case à supprimer dans un pointeur temporaire
-				Sda.all.Suivant := Sda.all.Suivant.all.Suivant;
-				Free (Tmp_Sda); 						-- On détruit le pointeur temporaire
-			elsif (Sda.all.Cle = Cle) then
+			if (Sda.all.Cle = Cle) then
 				Tmp_Sda := Sda; 						-- On stocke la case à supprimer dans un pointeur temporaire
 				Sda := Sda.all.Suivant;
 				Free (Tmp_Sda);							-- On détruit le pointeur temporaire

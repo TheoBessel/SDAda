@@ -4,6 +4,8 @@ with Ada.Command_Line;     use Ada.Command_Line;
 with SDA_Exceptions;       use SDA_Exceptions;
 with Alea;
 
+with LCA;
+
 -- Évaluer la qualité du générateur aléatoire et les LCA.
 procedure Evaluer_Alea_LCA is
 
@@ -71,8 +73,46 @@ procedure Evaluer_Alea_LCA is
 			new Alea (1, Borne);
 		use Mon_Alea;
 
+		package LCA_Int_Freq is
+			new LCA (T_Cle => Integer, T_Valeur => Integer);
+		use LCA_Int_Freq;
+
+		Sda : T_LCA;
+		Cle_Alea : Integer;
+		Freq_Alea: Integer;
 	begin
-		null;	-- TODO à remplacer !
+		Initialiser(Sda);
+
+		for I in 1..Taille loop
+			Mon_Alea.Get_Random_Number(Cle_Alea);
+			
+			begin
+				Freq_Alea := La_Valeur(Sda, Cle_Alea) + 1;
+			exception
+				when Cle_Absente_Exception => Freq_Alea := 1;
+			end;
+
+			Enregistrer(Sda, Cle_Alea, Freq_Alea);
+		end loop;
+
+		Min := Taille + 1;
+		Max := -1;
+
+		for I in 1..Taille loop
+			begin
+				Freq_Alea := La_Valeur(Sda, I);
+			exception
+				when Cle_Absente_Exception => Freq_Alea := 0;
+			end;
+
+			if Min > Freq_Alea then
+				Min := Freq_Alea;
+			elsif Max < Freq_Alea then
+				Max := Freq_Alea;
+			else
+				Null;
+			end if;
+		end loop;
 	end Calculer_Statistiques;
 
 
