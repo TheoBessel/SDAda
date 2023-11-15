@@ -16,9 +16,5 @@ project PR2 is
       for Default_Switches ("ada") use ("-E");
    end Binder;
 
-   --package Linker is
-   --   for Switches ("Ada") use ("-Xlinker", "-ld_classic", "-mmacosx-version-min=10.14.1");
-   --end Linker;
-
 end PR2;
 

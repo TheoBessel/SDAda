@@ -23,7 +23,7 @@ package LCA is
 
 
 	-- Obtenir le nombre d'éléments d'une Sda. 
-	function Taille (Sda : in T_LCA) return Integer with
+	function Taille (Sda : in T_LCA) return Natural with
 		Post => Taille'Result >= 0
 			and (Taille'Result = 0) = Est_Vide (Sda);
 

@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body TH is
 
-    function Hash (Cle : T_Cle) return Integer is
+    function Hash (Cle : T_Cle) return Positive is
         V_Hash : Integer := F_Hash(Cle) mod V_Capacity;
     begin
         if V_Hash = 0 then
@@ -45,8 +45,8 @@ package body TH is
 	end Est_Vide;
 
 
-    function Taille (Sda: in T_TH) return Integer is
-        Taille : Integer := 0;
+    function Taille (Sda: in T_TH) return Natural is
+        Taille : Natural := 0;
 	begin
         for I in 1..V_Capacity loop
             Taille := Taille + LCA_Var.Taille(Sda(I));

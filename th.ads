@@ -29,7 +29,7 @@ package TH is
 
 
 	-- Obtenir le nombre d'éléments d'une Sda. 
-	function Taille (Sda : in T_TH) return Integer with
+	function Taille (Sda : in T_TH) return Natural with
 		Post => Taille'Result >= 0
 			and (Taille'Result = 0) = Est_Vide (Sda);
 

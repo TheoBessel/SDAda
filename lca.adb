@@ -45,7 +45,7 @@ package body LCA is
 	end;
 
 
-	function Taille (Sda : in T_LCA) return Integer is
+	function Taille (Sda : in T_LCA) return Natural is
 	begin
 		if Est_Vide(Sda) then
 			return 0;									-- La liste vide est de taille égale à 0
