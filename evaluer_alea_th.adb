@@ -1,6 +1,7 @@
 with Ada.Text_IO;          use Ada.Text_IO;
 with Ada.Integer_Text_IO;  use Ada.Integer_Text_IO;
 with Ada.Command_Line;     use Ada.Command_Line;
+with Ada.Exceptions;	   use Ada.Exceptions;
 with SDA_Exceptions;       use SDA_Exceptions;
 with Alea;
 
@@ -31,6 +32,37 @@ procedure Evaluer_Alea_TH is
 		Put (Valeur, Largeur_Valeur);
 		New_Line;
 	end Afficher_Variable;
+
+
+	Bad_Argument_Exception : Exception;
+	-- Récupère les arguments donnés au programme.
+	-- On vérifie le nombre et le format des arguments et on lève une exception si il y a une erreur
+	procedure Recuperer_Arguments (Borne : out Integer; Taille : out Integer) is
+	begin
+		if (Argument_Count < 2) then
+			raise Bad_Argument_Exception with "Le programme n'a pas assez d'arguments !";
+		elsif (Argument_Count > 2) then
+			raise Bad_Argument_Exception with "Le programme a trop d'arguments !";
+		end if;
+		begin
+			Borne := Integer'Value(Argument(1));
+			if Borne < 1 then
+				raise Bad_Argument_Exception with " must be an integer greater than 1";
+			end if;
+		exception 
+			when E : Bad_Argument_Exception => raise Bad_Argument_Exception with "Mauvais argument : " & '"' & Argument(1) & '"' & Exception_Message(E);
+			when Constraint_Error => raise Bad_Argument_Exception with "Mauvais argument : " & '"' & Argument(1) & '"';
+		end;
+		begin
+			Taille := Integer'Value(Argument(2));
+			if Taille < 1 then
+				raise Bad_Argument_Exception with " must be an integer greater than 1";
+			end if;
+		exception 
+			when E : Bad_Argument_Exception => raise Bad_Argument_Exception with "Mauvais argument : " & '`' & Argument(2) & '`' & Exception_Message(E);
+			when Constraint_Error => raise Bad_Argument_Exception with "Mauvais argument : " & '`' & Argument(2) & '`';
+		end;
+	end Recuperer_Arguments;
 
 	-- Évaluer la qualité du générateur de nombre aléatoire Alea sur un
 	-- intervalle donné en calculant les fréquences absolues minimales et
@@ -120,27 +152,23 @@ procedure Evaluer_Alea_TH is
 		end loop;
 	end Calculer_Statistiques;
 
-
-
 	Min, Max: Integer; -- fréquence minimale et maximale d'un échantillon
 	Borne: Integer;    -- les nombres aléatoire sont tirés dans 1..Borne
-	Taille: integer;   -- nombre de tirages aléatoires
+	Taille: Integer;   -- nombre de tirages aléatoires
 begin
-	if Argument_Count /= 2 then
-		Afficher_Usage;
-	else
-		-- Récupérer les arguments de la ligne de commande
-		Borne := Integer'Value (Argument (1));
-		Taille := Integer'Value (Argument (2));
+	-- Récupérer les arguments de la ligne de commande
+	begin
+		Recuperer_Arguments(Borne, Taille); -- Récupère les arguments avec robustesse
+		exception
+			when E : Bad_Argument_Exception => Put_Line(Exception_Message(E)); Afficher_Usage; return;
+	end;
+	-- Afficher les valeur de Borne et Taille
+	Afficher_Variable ("Borne ", Borne);
+	Afficher_Variable ("Taille", Taille);
 
-		-- Afficher les valeur de Borne et Taille
-		Afficher_Variable ("Borne ", Borne);
-		Afficher_Variable ("Taille", Taille);
+	Calculer_Statistiques (Borne, Taille, Min, Max);
 
-		Calculer_Statistiques (Borne, Taille, Min, Max);
-
-		-- Afficher les fréquence Min et Max
-		Afficher_Variable ("Min", Min);
-		Afficher_Variable ("Max", Max);
-	end if;
+	-- Afficher les fréquence Min et Max
+	Afficher_Variable ("Min", Min);
+	Afficher_Variable ("Max", Max);
 end Evaluer_Alea_TH;
